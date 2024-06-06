@@ -34,5 +34,6 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
+          heroku auth:token ${{ secrets.HEROKU_API_KEY }}
           git remote add heroku https://git.heroku.com/delmano-task-manager-api.git
           git push heroku main
