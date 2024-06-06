@@ -34,11 +34,3 @@ jobs:
 
       - name: Build project
         run: npm run build
-
-      - name: Deploy to Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          heroku auth:token ${{ secrets.HEROKU_API_KEY }}
-          git remote add heroku https://git.heroku.com/delmano-task-manager-api.git
-          git push heroku main
