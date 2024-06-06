@@ -8,8 +8,8 @@ const options = {
     description: "API for managing projects and tasks",
   },
   baseDir: __dirname,
-  filesPattern: "./routes/*.ts",
-  swaggerUIPath: "/api-docs",
+  filesPattern:
+    process.env.NODE_ENV === "production" ? "./routes/*.js" : "./routes/*.ts",
   exposeSwaggerUI: true,
   exposeApiDocs: false,
   apiDocsPath: "/v3/api-docs",
@@ -34,6 +34,7 @@ const options = {
 };
 
 const setupSwagger = (app: express.Application) => {
+  console.log(process.env.NODE_ENV);
   expressJSDocSwagger(app)(options);
 };
 
