@@ -34,7 +34,6 @@ const options = {
 };
 
 const setupSwagger = (app: express.Application) => {
-  console.log(process.env.NODE_ENV);
   expressJSDocSwagger(app)(options);
 };
 

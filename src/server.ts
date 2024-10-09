@@ -18,6 +18,7 @@ connectDB();
 app.use("/api/auth", require("./routes/authRoutes").default);
 app.use("/api/projects", require("./routes/projectRoutes").default);
 app.use("/api/tasks", require("./routes/taskRoutes").default);
+app.use("/api/transactions", require("./routes/transactionRoutes").default);
 app.use("/api/users", require("./routes/userRoutes").default);
 
 // Swagger setup

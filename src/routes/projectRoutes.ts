@@ -1,5 +1,11 @@
 import express from "express";
-import { create, list, update, remove } from "../controllers/projectController";
+import {
+  create,
+  list,
+  update,
+  remove,
+  getById,
+} from "../controllers/projectController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { verifyProjectOwner } from "../middlewares/permissionsMiddleware";
 
@@ -30,6 +36,18 @@ const router = express.Router();
  * @return {object} 400 - error response - application/json
  */
 router.get("/", authMiddleware, list);
+
+/**
+ * GET /api/projects/{id}
+ * @summary Get a project by ID
+ * @tags Projects
+ * @security BearerAuth
+ * @param {string} id.path.required - Project ID
+ * @return {object} 200 - success response - application/json
+ * @return {object} 400 - error response - application/json
+ * @return {object} 404 - project not found - application/json
+ */
+router.get("/:id", authMiddleware, verifyProjectOwner, getById);
 
 /**
  * POST /api/projects

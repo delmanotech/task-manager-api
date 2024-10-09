@@ -4,6 +4,7 @@ import {
   getProjects,
   updateProject,
   deleteProject,
+  getProjectById,
 } from "../services/projectService";
 
 export const create = async (req: Request, res: Response) => {
@@ -23,6 +24,15 @@ export const list = async (req: Request, res: Response) => {
   try {
     const projects = await getProjects((req as any).user.userId);
     res.status(200).json(projects);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const getById = async (req: Request, res: Response) => {
+  try {
+    const project = await getProjectById(req.params.id);
+    res.status(200).json(project);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }

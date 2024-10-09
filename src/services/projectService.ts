@@ -11,10 +11,19 @@ export const createProject = async (
 };
 
 export const getProjects = async (userId: string) => {
-  const projects = await Project.find({ members: userId }).populate(
-    "owner members"
-  );
+  const projects = await Project.find({
+    $or: [{ owner: userId }, { members: userId }],
+  }).populate([
+    { path: "owner", select: "-password" },
+    { path: "members", select: "-password" },
+  ]);
+
   return projects;
+};
+
+export const getProjectById = async (projectId: string) => {
+  const project = await Project.findById(projectId).populate("owner members");
+  return project;
 };
 
 export const updateProject = async (projectId: string, updates: any) => {
