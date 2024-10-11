@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login } from "../controllers/authController";
+import authController from "../controllers/authController";
 
 /**
  * @typedef {object} RegisterParams
@@ -17,7 +17,7 @@ const router = express.Router();
  * @return {object} 201 - success response - application/json
  * @return {object} 400 - error response - application/json
  */
-router.post("/register", register);
+router.post("/register", authController.register);
 
 /**
  * POST /api/auth/login
@@ -27,6 +27,6 @@ router.post("/register", register);
  * @return {object} 200 - success response - application/json
  * @return {object} 400 - error response - application/json
  */
-router.post("/login", login);
+router.post("/login", authController.login);
 
 export default router;

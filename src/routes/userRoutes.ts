@@ -1,11 +1,6 @@
 import express from "express";
-import {
-  listUsers,
-  getUser,
-  editUser,
-  removeUser,
-} from "../controllers/userController";
-import { authMiddleware } from "../middlewares/authMiddleware";
+import userController from "../controllers/userController";
+import { authenticate } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -13,6 +8,7 @@ const router = express.Router();
  * @typedef {object} UserParams
  * @property {string} email.required - Email of the user
  * @property {string} password.required - Password of the user
+ * @property {array<string>} roles - Roles of the user - eg: ["admin", "user"]
  */
 
 /**
@@ -20,6 +16,7 @@ const router = express.Router();
  * @property {string} _id - User ID
  * @property {string} email - Email of the user
  * @property {string} password - Password of the user
+ * @property {array<string>} roles - Roles of the user - eg: ["admin", "user"]
  */
 
 /**
@@ -30,7 +27,7 @@ const router = express.Router();
  * @return {array<User>} 200 - success response - application/json
  * @return {object} 400 - error response - application/json
  */
-router.get("/", authMiddleware, listUsers);
+router.get("/", authenticate, userController.listUsers);
 
 /**
  * GET /api/users/{id}
@@ -41,7 +38,7 @@ router.get("/", authMiddleware, listUsers);
  * @return {User} 200 - success response - application/json
  * @return {object} 404 - user not found - application/json
  */
-router.get("/:id", authMiddleware, getUser);
+router.get("/:id", authenticate, userController.getUser);
 
 /**
  * PUT /api/users/{id}
@@ -54,7 +51,7 @@ router.get("/:id", authMiddleware, getUser);
  * @return {object} 400 - error response - application/json
  * @return {object} 404 - user not found - application/json
  */
-router.put("/:id", authMiddleware, editUser);
+router.put("/:id", authenticate, userController.editUser);
 
 /**
  * DELETE /api/users/{id}
@@ -65,6 +62,6 @@ router.put("/:id", authMiddleware, editUser);
  * @return {object} 204 - success response - no content
  * @return {object} 404 - user not found - application/json
  */
-router.delete("/:id", authMiddleware, removeUser);
+router.delete("/:id", authenticate, userController.removeUser);
 
 export default router;

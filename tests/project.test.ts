@@ -1,5 +1,4 @@
 import request from "supertest";
-import mongoose from "mongoose";
 import Project from "../src/models/Project";
 import User from "../src/models/User";
 import app from "../src/server";

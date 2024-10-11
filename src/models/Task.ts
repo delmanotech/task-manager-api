@@ -4,6 +4,7 @@ export interface ITask extends Document {
   name: string;
   description: string;
   project: mongoose.Schema.Types.ObjectId;
+  createdBy: mongoose.Schema.Types.ObjectId;
   assignedTo: mongoose.Schema.Types.ObjectId;
   status: "pending" | "in-progress" | "completed";
   dueDate: Date;
@@ -18,6 +19,11 @@ const taskSchema: Schema = new Schema(
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
+      required: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

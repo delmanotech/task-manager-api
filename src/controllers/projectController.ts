@@ -1,57 +1,62 @@
-import { Request, Response } from "express";
-import {
-  createProject,
-  getProjects,
-  updateProject,
-  deleteProject,
-  getProjectById,
-} from "../services/projectService";
+import { NextFunction, Request, Response } from "express";
+import ProjectService from "../services/projectService";
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const project = await createProject(
-      req.body.name,
-      req.body.description,
-      (req as any).user.userId
-    );
-    res.status(201).json(project);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
-  }
-};
+class ProjectController {
+  constructor() {}
 
-export const list = async (req: Request, res: Response) => {
-  try {
-    const projects = await getProjects((req as any).user.userId);
-    res.status(200).json(projects);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const project = await ProjectService.createProject(
+        req.body.name,
+        req.body.description,
+        (req as any).user.userId
+      );
+      res.status(201).json(project);
+    } catch (error: any) {
+      next(error);
+    }
   }
-};
 
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const project = await getProjectById(req.params.id);
-    res.status(200).json(project);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+  async list(req: Request, res: Response, next: NextFunction) {
+    try {
+      const projects = await ProjectService.getProjects(
+        (req as any).user.userId
+      );
+      res.status(200).json(projects);
+    } catch (error: any) {
+      next(error);
+    }
   }
-};
 
-export const update = async (req: Request, res: Response) => {
-  try {
-    const project = await updateProject(req.params.id, req.body);
-    res.status(200).json(project);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const project = await ProjectService.getProjectById(req.params.id);
+      res.status(200).json(project);
+    } catch (error: any) {
+      next(error);
+    }
   }
-};
 
-export const remove = async (req: Request, res: Response) => {
-  try {
-    await deleteProject(req.params.id);
-    res.status(204).send();
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const project = await ProjectService.updateProject(
+        req.params.id,
+        req.body
+      );
+      res.status(200).json(project);
+    } catch (error: any) {
+      next(error);
+    }
   }
-};
+
+  async remove(req: Request, res: Response, next: NextFunction) {
+    try {
+      await ProjectService.deleteProject(req.params.id);
+      res.status(204).send();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+}
+
+export default new ProjectController();

@@ -4,61 +4,58 @@ import Transaction, {
   UpdateTransactionRequest,
 } from "../models/Transaction";
 
-export const createTransaction = async (
-  transaction: CreateTransactionRequest
-) => {
-  const newTransaction = new Transaction(transaction);
+class TransactionService {
+  public static async createTransaction(transaction: CreateTransactionRequest) {
+    const newTransaction = new Transaction(transaction);
+    await newTransaction.save();
+    return newTransaction;
+  }
 
-  await newTransaction.save();
+  public static async getTransactions(
+    projectId: string,
+    filters?: TransactionsRequestFilters
+  ) {
+    const query: any = {
+      project: projectId,
+      ...(filters?.paid !== undefined && { paid: filters.paid }),
+      ...(filters?.type && { type: filters.type }),
+      ...(filters?.createdBy && { createdBy: filters.createdBy }),
+      ...(filters?.dateFrom || filters?.dateTo
+        ? {
+            date: {
+              ...(filters.dateFrom && { $gte: filters.dateFrom }),
+              ...(filters.dateTo && { $lte: filters.dateTo }),
+            },
+          }
+        : {}),
+    };
 
-  return newTransaction;
-};
+    const transactions = await Transaction.find(query);
+    return transactions;
+  }
 
-export const getTransactions = async (
-  projectId: string,
-  filters?: TransactionsRequestFilters
-) => {
-  const query: any = {
-    project: projectId,
-    ...(filters?.paid !== undefined && { paid: filters.paid }),
-    ...(filters?.type && { type: filters.type }),
-    ...(filters?.createdBy && { createdBy: filters.createdBy }),
-    ...(filters?.dateFrom || filters?.dateTo
-      ? {
-          date: {
-            ...(filters.dateFrom && { $gte: filters.dateFrom }),
-            ...(filters.dateTo && { $lte: filters.dateTo }),
-          },
-        }
-      : {}),
-  };
+  public static async getTransactionById(transactionId: string) {
+    const transaction = await Transaction.findById(transactionId);
+    return transaction;
+  }
 
-  const transactions = await Transaction.find(query);
+  public static async updateTransaction(
+    transactionId: string,
+    updates: UpdateTransactionRequest
+  ) {
+    const transaction = await Transaction.findByIdAndUpdate(
+      transactionId,
+      updates,
+      {
+        new: true,
+      }
+    );
+    return transaction;
+  }
 
-  return transactions;
-};
+  public static async deleteTransaction(transactionId: string) {
+    await Transaction.findByIdAndDelete(transactionId);
+  }
+}
 
-export const getTransactionById = async (transactionId: string) => {
-  const transaction = await Transaction.findById(transactionId);
-
-  return transaction;
-};
-
-export const updateTransaction = async (
-  transactionId: string,
-  updates: UpdateTransactionRequest
-) => {
-  const transaction = await Transaction.findByIdAndUpdate(
-    transactionId,
-    updates,
-    {
-      new: true,
-    }
-  );
-
-  return transaction;
-};
-
-export const deleteTransaction = async (transactionId: string) => {
-  await Transaction.findByIdAndDelete(transactionId);
-};
+export default TransactionService;

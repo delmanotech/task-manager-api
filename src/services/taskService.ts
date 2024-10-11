@@ -1,29 +1,33 @@
 import Task from "../models/Task";
 
-export const createTask = async (
-  name: string,
-  description: string,
-  project: string,
-  assignedTo: string,
-  dueDate: Date
-) => {
-  const task = new Task({ name, description, project, assignedTo, dueDate });
-  await task.save();
-  return task;
-};
+class TaskService {
+  public static async createTask(
+    name: string,
+    description: string,
+    project: string,
+    assignedTo: string,
+    dueDate: Date
+  ) {
+    const task = new Task({ name, description, project, assignedTo, dueDate });
+    await task.save();
+    return task;
+  }
 
-export const getTasks = async (projectId: string) => {
-  const tasks = await Task.find({ project: projectId }).populate(
-    "project assignedTo"
-  );
-  return tasks;
-};
+  public static async getTasks(projectId: string) {
+    const tasks = await Task.find({ project: projectId }).populate(
+      "project assignedTo createdBy"
+    );
+    return tasks;
+  }
 
-export const updateTask = async (taskId: string, updates: any) => {
-  const task = await Task.findByIdAndUpdate(taskId, updates, { new: true });
-  return task;
-};
+  public static async updateTask(taskId: string, updates: any) {
+    const task = await Task.findByIdAndUpdate(taskId, updates, { new: true });
+    return task;
+  }
 
-export const deleteTask = async (taskId: string) => {
-  await Task.findByIdAndDelete(taskId);
-};
+  public static async deleteTask(taskId: string) {
+    await Task.findByIdAndDelete(taskId);
+  }
+}
+
+export default TaskService;

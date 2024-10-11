@@ -1,7 +1,6 @@
 import express from "express";
 import transactionController from "../controllers/transactionController";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import e from "express";
+import { authenticate } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -49,7 +48,7 @@ const router = express.Router();
  * @return {object} 404 - project not found - application/json
  *
  */
-router.get("/", authMiddleware, transactionController.list);
+router.get("/", authenticate, transactionController.list);
 
 /**
  *
@@ -63,7 +62,7 @@ router.get("/", authMiddleware, transactionController.list);
  * @return {object} 404 - transaction not found - application/json
  *
  */
-router.get("/:id", authMiddleware, transactionController.getById);
+router.get("/:id", authenticate, transactionController.getById);
 
 /**
  *
@@ -77,7 +76,7 @@ router.get("/:id", authMiddleware, transactionController.getById);
  *
  */
 
-router.post("/", authMiddleware, transactionController.create);
+router.post("/", authenticate, transactionController.create);
 
 /**
  *
@@ -92,7 +91,7 @@ router.post("/", authMiddleware, transactionController.create);
  * @return {object} 404 - transaction not found - application/json
  *
  */
-router.put("/:id", authMiddleware, transactionController.update);
+router.put("/:id", authenticate, transactionController.update);
 
 /**
  *
@@ -105,6 +104,6 @@ router.put("/:id", authMiddleware, transactionController.update);
  * @return {object} 404 - transaction not found - application/json
  *
  */
-router.delete("/:id", authMiddleware, transactionController.remove);
+router.delete("/:id", authenticate, transactionController.remove);
 
 export default router;

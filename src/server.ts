@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
 import setupSwagger from "./swagger"; // Importar configuração do Swagger
+import errorHandler from "./middlewares/errorHandlerMiddeware";
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(express.json());
+app.use(errorHandler);
 
 // Database connection
 connectDB();

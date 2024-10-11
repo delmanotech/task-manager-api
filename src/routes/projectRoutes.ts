@@ -1,13 +1,7 @@
 import express from "express";
-import {
-  create,
-  list,
-  update,
-  remove,
-  getById,
-} from "../controllers/projectController";
-import { authMiddleware } from "../middlewares/authMiddleware";
+import { authenticate } from "../middlewares/authMiddleware";
 import { verifyProjectOwner } from "../middlewares/permissionsMiddleware";
+import projectController from "../controllers/projectController";
 
 const router = express.Router();
 
@@ -35,7 +29,7 @@ const router = express.Router();
  * @return {array<Project>} 200 - success response - application/json
  * @return {object} 400 - error response - application/json
  */
-router.get("/", authMiddleware, list);
+router.get("/", authenticate, projectController.list);
 
 /**
  * GET /api/projects/{id}
@@ -47,7 +41,7 @@ router.get("/", authMiddleware, list);
  * @return {object} 400 - error response - application/json
  * @return {object} 404 - project not found - application/json
  */
-router.get("/:id", authMiddleware, verifyProjectOwner, getById);
+router.get("/:id", authenticate, projectController.getById);
 
 /**
  * POST /api/projects
@@ -58,7 +52,7 @@ router.get("/:id", authMiddleware, verifyProjectOwner, getById);
  * @return {object} 201 - success response - application/json
  * @return {object} 400 - error response - application/json
  */
-router.post("/", authMiddleware, create);
+router.post("/", authenticate, projectController.create);
 
 /**
  * PUT /api/projects/{id}
@@ -71,7 +65,7 @@ router.post("/", authMiddleware, create);
  * @return {object} 400 - error response - application/json
  * @return {object} 404 - project not found - application/json
  */
-router.put("/:id", authMiddleware, verifyProjectOwner, update);
+router.put("/:id", authenticate, verifyProjectOwner, projectController.update);
 
 /**
  * DELETE /api/projects/{id}
@@ -82,6 +76,11 @@ router.put("/:id", authMiddleware, verifyProjectOwner, update);
  * @return {object} 204 - success response - no content
  * @return {object} 404 - project not found - application/json
  */
-router.delete("/:id", authMiddleware, verifyProjectOwner, remove);
+router.delete(
+  "/:id",
+  authenticate,
+  verifyProjectOwner,
+  projectController.remove
+);
 
 export default router;

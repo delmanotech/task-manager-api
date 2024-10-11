@@ -1,6 +1,6 @@
 import express from "express";
-import { create, list, update, remove } from "../controllers/taskController";
-import { authMiddleware } from "../middlewares/authMiddleware";
+import taskController from "../controllers/taskController";
+import { authenticate } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -34,7 +34,7 @@ const router = express.Router();
  * @return {array<Task>} 200 - success response - application/json
  * @return {object} 400 - error response - application/json
  */
-router.get("/:projectId", authMiddleware, list);
+router.get("/:projectId", authenticate, taskController.list);
 
 /**
  * POST /api/tasks
@@ -45,7 +45,7 @@ router.get("/:projectId", authMiddleware, list);
  * @return {object} 201 - success response - application/json
  * @return {object} 400 - error response - application/json
  */
-router.post("/", authMiddleware, create);
+router.post("/", authenticate, taskController.create);
 
 /**
  * PUT /api/tasks/{id}
@@ -58,7 +58,7 @@ router.post("/", authMiddleware, create);
  * @return {object} 400 - error response - application/json
  * @return {object} 404 - task not found - application/json
  */
-router.put("/:id", authMiddleware, update);
+router.put("/:id", authenticate, taskController.update);
 
 /**
  * DELETE /api/tasks/{id}
@@ -69,6 +69,6 @@ router.put("/:id", authMiddleware, update);
  * @return {object} 204 - success response - no content
  * @return {object} 404 - task not found - application/json
  */
-router.delete("/:id", authMiddleware, remove);
+router.delete("/:id", authenticate, taskController.remove);
 
 export default router;
