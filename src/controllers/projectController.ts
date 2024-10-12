@@ -13,6 +13,7 @@ class ProjectController {
       );
       res.status(201).json(project);
     } catch (error: any) {
+      console.log(error)
       next(error);
     }
   }

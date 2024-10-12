@@ -15,7 +15,7 @@ class ProjectService {
     const projects = await Project.find({
       $or: [{ owner: userId }, { members: userId }],
     }).populate([
-      { path: "owner", select: "-password" },
+      { path: "owner", select: "-password -roles" },
       { path: "members", select: "-password" },
     ]);
 
@@ -23,7 +23,10 @@ class ProjectService {
   }
 
   public static async getProjectById(projectId: string) {
-    const project = await Project.findById(projectId).populate("owner members");
+    const project = await Project.findById(projectId).populate([
+      { path: "owner", select: "-password -roles" },
+      { path: "members", select: "-password" },
+    ]);
     return project;
   }
 

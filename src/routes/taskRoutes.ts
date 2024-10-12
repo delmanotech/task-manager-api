@@ -12,6 +12,7 @@ const router = express.Router();
  * @property {string} assignedTo - User ID assigned to the task
  * @property {string} status - Status of the task
  * @property {string} dueDate - Due date of the task
+ * @property {string} createdBy - User ID who created the task
  */
 
 /**
@@ -23,18 +24,31 @@ const router = express.Router();
  * @property {string} assignedTo - User ID assigned to the task
  * @property {string} status - Status of the task
  * @property {string} dueDate - Due date of the task
+ * @property {string} createdBy - User ID who created the task
  */
 
 /**
- * GET /api/tasks/{projectId}
+ * GET /api/tasks
  * @summary Get a list of tasks for a project
  * @tags Tasks
  * @security BearerAuth
- * @param {string} projectId.path.required - Project ID
+ * @param {string} projectId.query.required - Project ID
  * @return {array<Task>} 200 - success response - application/json
  * @return {object} 400 - error response - application/json
  */
-router.get("/:projectId", authenticate, taskController.list);
+router.get("/", authenticate, taskController.list);
+
+/**
+ * GET /api/tasks/{id}
+ * @summary Get a task by ID
+ * @tags Tasks
+ * @security BearerAuth
+ * @param {string} id.path.required - Task ID
+ * @return {object} 200 - success response - application/json
+ * @return {object} 400 - error response - application/json
+ * @return {object} 404 - task not found - application/json
+ */
+router.get("/:id", authenticate, taskController.getById);
 
 /**
  * POST /api/tasks

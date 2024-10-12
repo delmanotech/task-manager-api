@@ -23,87 +23,39 @@ afterEach(async () => {
   await User.deleteMany({});
 });
 
+// Funções auxiliares para criar um projeto e uma tarefa
+const createProject = async () => {
+  const res = await request(app)
+    .post("/api/projects")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      name: "Projeto Teste",
+      description: "Descrição do Projeto Teste",
+      owner: userId,
+      members: [userId],
+    });
+  return res.body._id;
+};
+
+const createTask = async (projectId: string) => {
+  const res = await request(app)
+    .post("/api/tasks")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      name: "Tarefa Teste",
+      description: "Descrição da Tarefa Teste",
+      project: projectId,
+      assignedTo: userId,
+      status: "pending",
+      dueDate: "2024-07-01T00:00:00.000Z",
+      createdBy: userId,
+    });
+  return res.body;
+};
+
 describe("Task API", () => {
   it("should create a new task", async () => {
-    // Primeiro, crie um projeto para a tarefa
-    const projectRes = await request(app)
-      .post("/api/projects")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Projeto Teste",
-        description: "Descrição do Projeto Teste",
-        owner: "665f95e2957f65e976a2fe86",
-        members: ["665f95e2957f65e976a2fe86"],
-      });
-
-    const projectId = projectRes.body._id;
-
-    const res = await request(app)
-      .post("/api/tasks")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Tarefa Teste",
-        description: "Descrição da Tarefa Teste",
-        project: projectId,
-        assignedTo: "665f95e2957f65e976a2fe86",
-        status: "pending",
-        dueDate: "2024-07-01T00:00:00.000Z",
-      });
-
-    expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty("name", "Tarefa Teste");
-  });
-
-  it("should get a list of tasks for a project", async () => {
-    // Primeiro, crie um projeto para a tarefa
-    const projectRes = await request(app)
-      .post("/api/projects")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Projeto Teste",
-        description: "Descrição do Projeto Teste",
-        owner: "665f95e2957f65e976a2fe86",
-        members: ["665f95e2957f65e976a2fe86"],
-      });
-
-    const projectId = projectRes.body._id;
-
-    // Em seguida, crie uma tarefa para o projeto
-    await request(app)
-      .post("/api/tasks")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Tarefa Teste",
-        description: "Descrição da Tarefa Teste",
-        project: projectId,
-        assignedTo: "665f95e2957f65e976a2fe86",
-        status: "pending",
-        dueDate: "2024-07-01T00:00:00.000Z",
-      });
-
-    const res = await request(app)
-      .get(`/api/tasks/${projectId}`)
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toBeInstanceOf(Array);
-  });
-
-  it("should update a task", async () => {
-    // Primeiro, crie um projeto para a tarefa
-    const projectRes = await request(app)
-      .post("/api/projects")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Projeto Teste",
-        description: "Descrição do Projeto Teste",
-        owner: "665f95e2957f65e976a2fe86",
-        members: ["665f95e2957f65e976a2fe86"],
-      });
-
-    const projectId = projectRes.body._id;
-
-    // Em seguida, crie uma tarefa para o projeto
+    const projectId = await createProject();
     const taskRes = await request(app)
       .post("/api/tasks")
       .set("Authorization", `Bearer ${token}`)
@@ -116,10 +68,40 @@ describe("Task API", () => {
         dueDate: "2024-07-01T00:00:00.000Z",
       });
 
-    const taskId = taskRes.body._id;
+    expect(taskRes.statusCode).toEqual(201);
+    expect(taskRes.body).toHaveProperty("name", "Tarefa Teste");
+  });
+
+  it("should get a list of tasks for a project", async () => {
+    const projectId = await createProject();
+    await createTask(projectId);
 
     const res = await request(app)
-      .put(`/api/tasks/${taskId}`)
+      .get(`/api/tasks?projectId=${projectId}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeInstanceOf(Array);
+  });
+
+  it("should get a task by ID", async () => {
+    const projectId = await createProject();
+    const task = await createTask(projectId);
+
+    const res = await request(app)
+      .get(`/api/tasks/${task._id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("name", "Tarefa Teste");
+  });
+
+  it("should update a task", async () => {
+    const projectId = await createProject();
+    const task = await createTask(projectId);
+
+    const res = await request(app)
+      .put(`/api/tasks/${task._id}`)
       .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Tarefa Atualizada",
@@ -132,36 +114,11 @@ describe("Task API", () => {
   });
 
   it("should delete a task", async () => {
-    // Primeiro, crie um projeto para a tarefa
-    const projectRes = await request(app)
-      .post("/api/projects")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Projeto Teste",
-        description: "Descrição do Projeto Teste",
-        owner: "665f95e2957f65e976a2fe86",
-        members: ["665f95e2957f65e976a2fe86"],
-      });
-
-    const projectId = projectRes.body._id;
-
-    // Em seguida, crie uma tarefa para o projeto
-    const taskRes = await request(app)
-      .post("/api/tasks")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Tarefa Teste",
-        description: "Descrição da Tarefa Teste",
-        project: projectId,
-        assignedTo: userId,
-        status: "pending",
-        dueDate: "2024-07-01T00:00:00.000Z",
-      });
-
-    const taskId = taskRes.body._id;
+    const projectId = await createProject();
+    const task = await createTask(projectId);
 
     const res = await request(app)
-      .delete(`/api/tasks/${taskId}`)
+      .delete(`/api/tasks/${task._id}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toEqual(204);
