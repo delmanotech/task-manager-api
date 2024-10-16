@@ -11,7 +11,6 @@ const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(express.json());
-app.use(errorHandler);
 
 // Database connection
 connectDB();
@@ -22,6 +21,8 @@ app.use("/api/projects", require("./routes/projectRoutes").default);
 app.use("/api/tasks", require("./routes/taskRoutes").default);
 app.use("/api/transactions", require("./routes/transactionRoutes").default);
 app.use("/api/users", require("./routes/userRoutes").default);
+
+app.use(errorHandler);
 
 // Swagger setup
 setupSwagger(app); // Configurar Swagger
