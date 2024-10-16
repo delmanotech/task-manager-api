@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { CustomError } from "../utils/custom-error";
 
 const errorHandler = (
   err: any,
@@ -7,9 +8,13 @@ const errorHandler = (
   next: NextFunction
 ) => {
   console.error(err.stack);
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
-  res.status(statusCode).json({ message });
+  if (err instanceof CustomError) {
+    res.status(err.statusCode).json({ message: err.message });
+  } else {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+    res.status(statusCode).json({ message });
+  }
 };
 
 export default errorHandler;
