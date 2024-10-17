@@ -34,12 +34,14 @@ describe("User API", () => {
   });
 
   it("should get a user by id", async () => {
-    const userRes = await request(app).post("/api/auth/register").send({
+    const { body } = await request(app).post("/api/auth/register").send({
       email: "anotheruser@example.com",
       password: "password123",
     });
 
-    const userId = userRes.body.userId;
+    const { user } = body;
+
+    const userId = user._id;
 
     const res = await request(app)
       .get(`/api/users/${userId}`)
@@ -50,12 +52,14 @@ describe("User API", () => {
   });
 
   it("should update a user", async () => {
-    const userRes = await request(app).post("/api/auth/register").send({
+    const { body } = await request(app).post("/api/auth/register").send({
       email: "anotheruser@example.com",
       password: "password123",
     });
 
-    const userId = userRes.body.userId;
+    const { user } = body;
+
+    const userId = user._id;
 
     const res = await request(app)
       .put(`/api/users/${userId}`)
@@ -69,12 +73,14 @@ describe("User API", () => {
   });
 
   it("should delete a user", async () => {
-    const userRes = await request(app).post("/api/auth/register").send({
+    const { body } = await request(app).post("/api/auth/register").send({
       email: "anotheruser@example.com",
       password: "password123",
     });
 
-    const userId = userRes.body.userId;
+    const { user } = body;
+
+    const userId = user._id;
 
     const res = await request(app)
       .delete(`/api/users/${userId}`)

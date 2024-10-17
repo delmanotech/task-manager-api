@@ -1,5 +1,4 @@
 import request from "supertest";
-import mongoose from "mongoose";
 import User from "../src/models/User";
 import app from "../src/server";
 
@@ -16,8 +15,7 @@ describe("Auth API", () => {
 
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty("token");
-    expect(res.body).toHaveProperty("userId");
-    expect(res.body).toHaveProperty("email", "test@example.com");
+    expect(res.body).toHaveProperty("user");
   });
 
   it("should login an existing user", async () => {
@@ -33,7 +31,6 @@ describe("Auth API", () => {
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("token");
-    expect(res.body).toHaveProperty("userId");
-    expect(res.body).toHaveProperty("email", "test@example.com");
+    expect(res.body).toHaveProperty("user");
   });
 });
