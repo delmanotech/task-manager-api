@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import connectDB from "./config/db";
-import setupSwagger from "./swagger"; // Importar configuração do Swagger
+import setupSwagger from "./swagger";
 import errorHandler from "./middlewares/errorHandlerMiddeware";
 
 dotenv.config();
@@ -11,6 +12,13 @@ const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Database connection
 connectDB();
@@ -22,10 +30,11 @@ app.use("/api/tasks", require("./routes/taskRoutes").default);
 app.use("/api/transactions", require("./routes/transactionRoutes").default);
 app.use("/api/users", require("./routes/userRoutes").default);
 
-app.use(errorHandler);
-
 // Swagger setup
 setupSwagger(app); // Configurar Swagger
+
+// Error handler middleware
+app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
