@@ -9,7 +9,14 @@ class AuthService {
     const user = new User({ email, password: hashedPassword });
     await user.save();
     const token = AuthService.generateToken(user._id.toString());
-    return { token, userId: user._id.toString(), email: user.email };
+    return {
+      token,
+      user: {
+        _id: user._id.toString(),
+        email: user.email,
+        roles: user.roles,
+      },
+    };
   }
 
   public static async loginUser(email: string, password: string) {
@@ -20,7 +27,15 @@ class AuthService {
     if (!isMatch) throw new CustomError("Invalid email or password", 401);
 
     const token = AuthService.generateToken(user._id.toString());
-    return { token, userId: user._id.toString(), email: user.email };
+
+    return {
+      token,
+      user: {
+        _id: user._id.toString(),
+        email: user.email,
+        roles: user.roles,
+      },
+    };
   }
 
   private static generateToken(userId: string) {

@@ -6,11 +6,11 @@ class AuthController {
 
   async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { token, userId, email } = await AuthService.registerUser(
+      const response = await AuthService.registerUser(
         req.body.email,
         req.body.password
       );
-      res.status(201).json({ token, userId, email });
+      res.status(201).json(response);
     } catch (error) {
       next(error);
     }
@@ -18,11 +18,11 @@ class AuthController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const { token, userId, email } = await AuthService.loginUser(
+      const response = await AuthService.loginUser(
         req.body.email,
         req.body.password
       );
-      res.status(200).json({ token, userId, email });
+      res.status(200).json(response);
     } catch (error) {
       next(error);
     }
