@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @typedef {object} TransactionParams
- * @property {string} projectId.required - Project ID
+ * @property {string} project.required - Project ID
  * @property {string} name.required - Transaction name
  * @property {string} type.required - Transaction type
  * @property {number} amount.required - Transaction amount
@@ -17,7 +17,7 @@ const router = express.Router();
  *
  * @typedef {object} Transaction
  * @property {string} _id - Transaction ID
- * @property {string} projectId - Project ID
+ * @property {string} project - Project ID
  * @property {string} name - Transaction name
  * @property {string} type - Transaction type
  * @property {number} amount - Transaction amount
@@ -37,12 +37,13 @@ const router = express.Router();
  * @summary Get a list of transactions for a project
  * @tags Transactions
  * @security BearerAuth
- * @param {string} projectId.path.required - Project ID
+ * @param {string} projectId.query.required - Project ID
  * @param {string} paid.query - Filter by payment status
  * @param {string} type.query - Filter by transaction type
  * @param {string} dateFrom.query - Filter by start date
  * @param {string} dateTo.query - Filter by end date
  * @param {string} createdBy.query - Filter by creator ID
+ * @param {string} category.query - Filter by category ID
  * @return {array<Transaction>} 200 - success response - application/json
  * @return {object} 400 - error response - application/json
  * @return {object} 404 - project not found - application/json

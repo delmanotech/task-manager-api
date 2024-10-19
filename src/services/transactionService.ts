@@ -17,6 +17,7 @@ class TransactionService {
   ) {
     const query: any = {
       project: projectId,
+      ...(filters?.category && { category: filters.category }),
       ...(filters?.paid !== undefined && { paid: filters.paid }),
       ...(filters?.type && { type: filters.type }),
       ...(filters?.createdBy && { createdBy: filters.createdBy }),

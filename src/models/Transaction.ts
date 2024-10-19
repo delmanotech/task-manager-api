@@ -7,6 +7,7 @@ export interface ITransaction extends Document {
   paid: boolean;
   paymentDate: Date;
   project: mongoose.Schema.Types.ObjectId;
+  category: mongoose.Schema.Types.ObjectId;
   createdBy: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -19,12 +20,14 @@ export interface CreateTransactionRequest {
   paid: boolean;
   paymentDate: Date;
   project: string;
+  category: string;
   createdBy: string;
 }
 
 export interface UpdateTransactionRequest {
   description?: string;
   amount?: number;
+  category?: string;
   type?: "income" | "expense";
   paid?: boolean;
   paymentDate?: Date;
@@ -32,6 +35,7 @@ export interface UpdateTransactionRequest {
 
 export interface TransactionsRequestFilters {
   paid?: boolean;
+  category?: string;
   type?: "income" | "expense";
   dateFrom?: Date;
   dateTo?: Date;
@@ -52,6 +56,11 @@ const transactionSchema: Schema = new Schema(
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
+      required: true,
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
       required: true,
     },
     createdBy: {

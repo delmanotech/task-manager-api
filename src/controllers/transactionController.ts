@@ -2,13 +2,17 @@ import { NextFunction, Request, Response } from "express";
 
 import { TransactionsRequestFilters } from "../models/Transaction";
 import TransactionService from "../services/transactionService";
+import { AuthRequest } from "../middlewares/authMiddleware";
 
 export class TransactionController {
   constructor() {}
 
-  async create(req: Request, res: Response, next: NextFunction) {
+  async create(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const transaction = await TransactionService.createTransaction(req.body);
+      const transaction = await TransactionService.createTransaction({
+        ...req.body,
+        createdBy: req.user.userId,
+      });
       res.status(201).json(transaction);
     } catch (error) {
       next(error);
@@ -26,10 +30,11 @@ export class TransactionController {
           ? new Date(req.query.dateTo as string)
           : undefined,
         createdBy: req.query.createdBy as string,
+        category: req.query.category as string,
       };
 
       const transactions = await TransactionService.getTransactions(
-        req.params.projectId,
+        req.query.projectId as string,
         filters
       );
       res.status(200).json(transactions);

@@ -23,7 +23,6 @@ afterEach(async () => {
   await User.deleteMany({});
 });
 
-// Funções auxiliares para criar um projeto e uma tarefa
 const createProject = async () => {
   const res = await request(app)
     .post("/api/projects")
