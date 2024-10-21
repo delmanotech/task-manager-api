@@ -10,18 +10,12 @@ class CategoryService {
   }
 
   public static async getCategories(projectId: string) {
-    const categories = await Category.find({ project: projectId }).populate({
-      path: "project",
-      select: "-__v",
-    });
+    const categories = await Category.find({ project: projectId });
     return categories;
   }
 
   public static async getCategoryById(categoryId: string) {
-    const category = await Category.findById(categoryId).populate({
-      path: "project",
-      select: "-__v",
-    });
+    const category = await Category.findById(categoryId);
     return category;
   }
 

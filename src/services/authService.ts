@@ -39,7 +39,7 @@ class AuthService {
   }
 
   private static generateToken(userId: string) {
-    return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+    return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "24h" });
   }
 }
 

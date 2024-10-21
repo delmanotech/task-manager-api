@@ -21,7 +21,8 @@ export class TransactionController {
   async list(req: Request, res: Response, next: NextFunction) {
     try {
       const filters: TransactionsRequestFilters = {
-        paid: req.query.paid === "true",
+        paid:
+          req.query.paid !== undefined ? req.query.paid === "true" : undefined,
         type: req.query.type as "income" | "expense",
         dateFrom: req.query.dateFrom
           ? new Date(req.query.dateFrom as string)

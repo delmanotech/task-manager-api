@@ -23,7 +23,7 @@ class TransactionService {
       ...(filters?.createdBy && { createdBy: filters.createdBy }),
       ...(filters?.dateFrom || filters?.dateTo
         ? {
-            date: {
+            paymentDate: {
               ...(filters.dateFrom && { $gte: filters.dateFrom }),
               ...(filters.dateTo && { $lte: filters.dateTo }),
             },
